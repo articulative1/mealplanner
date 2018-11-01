@@ -1,0 +1,22 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="meal">
+            <h2><span>{{meal.name}}</span></h2>
+            <span>{{meal.recipe}}</span>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span> Back</span>
+            </button>
+
+            <button type="button"
+                    (click)="random()"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'arrow-right'"></fa-icon>&nbsp;<span> Next</span>
+            </button>
+        </div>
+    </div>
+</div>

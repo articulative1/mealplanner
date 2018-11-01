@@ -1,0 +1,25 @@
+{
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "relationships": [],
+    "fields": [
+        {
+            "fieldName": "name",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "recipe",
+            "fieldType": "String"
+        }
+    ],
+    "changelogDate": "20180916143144",
+    "dto": "mapstruct",
+    "searchEngine": false,
+    "service": "serviceClass",
+    "entityTableName": "meal",
+    "jpaMetamodelFiltering": false,
+    "pagination": "infinite-scroll"
+}
