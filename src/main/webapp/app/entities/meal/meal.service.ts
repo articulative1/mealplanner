@@ -11,9 +11,9 @@ type EntityArrayResponseType = HttpResponse<IMeal[]>;
 
 @Injectable({ providedIn: 'root' })
 export class MealService {
-    private resourceUrl = SERVER_API_URL + 'api/meals';
+    public resourceUrl = SERVER_API_URL + 'api/meals';
 
-    constructor(private http: HttpClient) {}
+    constructor(protected http: HttpClient) {}
 
     create(meal: IMeal): Observable<EntityResponseType> {
         return this.http.post<IMeal>(this.resourceUrl, meal, { observe: 'response' });
@@ -34,9 +34,5 @@ export class MealService {
 
     delete(id: number): Observable<HttpResponse<any>> {
         return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response' });
-    }
-
-    random(): Observable<EntityResponseType> {
-        return this.http.get<IMeal>(`${this.resourceUrl}/random`, { observe: 'response' });
     }
 }

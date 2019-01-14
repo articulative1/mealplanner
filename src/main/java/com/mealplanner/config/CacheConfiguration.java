@@ -41,6 +41,9 @@ public class CacheConfiguration {
             cm.createCache(com.mealplanner.domain.User.class.getName() + ".authorities", jcacheConfiguration);
             cm.createCache(com.mealplanner.domain.Meal.class.getName(), jcacheConfiguration);
             cm.createCache(com.mealplanner.domain.Schedule.class.getName(), jcacheConfiguration);
+            cm.createCache(com.mealplanner.domain.Meal.class.getName() + ".recipeIngredients", jcacheConfiguration);
+            cm.createCache(com.mealplanner.domain.RecipeIngredient.class.getName(), jcacheConfiguration);
+            cm.createCache(com.mealplanner.domain.Ingredient.class.getName(), jcacheConfiguration);
             // jhipster-needle-ehcache-add-entry
         };
     }

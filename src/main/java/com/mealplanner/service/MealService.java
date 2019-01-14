@@ -6,14 +6,13 @@ import com.mealplanner.service.dto.MealDTO;
 import com.mealplanner.service.mapper.MealMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 
 /**
  * Service Implementation for managing Meal.
@@ -41,6 +40,7 @@ public class MealService {
      */
     public MealDTO save(MealDTO mealDTO) {
         log.debug("Request to save Meal : {}", mealDTO);
+
         Meal meal = mealMapper.toEntity(mealDTO);
         meal = mealRepository.save(meal);
         return mealMapper.toDto(meal);
@@ -71,20 +71,6 @@ public class MealService {
         log.debug("Request to get Meal : {}", id);
         return mealRepository.findById(id)
             .map(mealMapper::toDto);
-    }
-
-    /**
-     * Get one random meal.
-     *
-     * @return the entity
-     */
-    @Transactional(readOnly = true)
-    public Optional<MealDTO> getRandomMeal() {
-        log.debug("Request to get random Meal");
-        List<Meal> meals = mealRepository.findAll();
-        Random random = new Random();
-        int index = random.nextInt(meals.size());
-        return Optional.of(meals.get(index)).map(mealMapper::toDto);
     }
 
     /**
