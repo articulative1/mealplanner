@@ -1,12 +1,9 @@
 entity Meal {
 	name String
-    recipeIngredient RecipeIngredient
     recipe String
-    
 }
 
 entity RecipeIngredient {
-	ingredient Ingredient,
     measurementType MeasurementType
     measurementValue Double
 }
@@ -18,7 +15,6 @@ entity Ingredient {
 entity Schedule {
 	date Instant,
 	completed Boolean,
-	meal Meal,
 }
 
 
