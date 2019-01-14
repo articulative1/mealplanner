@@ -1,5 +1,6 @@
 package com.mealplanner.service.dto;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -10,6 +11,7 @@ public class MealDTO implements Serializable {
 
     private Long id;
 
+    @NotNull
     private String name;
 
     private String recipe;

@@ -2,15 +2,16 @@ package com.mealplanner.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.mealplanner.service.ScheduleService;
+import com.mealplanner.service.dto.ScheduleDTO;
 import com.mealplanner.web.rest.errors.BadRequestAlertException;
 import com.mealplanner.web.rest.util.HeaderUtil;
 import com.mealplanner.web.rest.util.PaginationUtil;
-import com.mealplanner.service.dto.ScheduleDTO;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-
+import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,10 +31,8 @@ import java.util.Optional;
 @RequestMapping("/api")
 public class ScheduleResource {
 
-    private final Logger log = LoggerFactory.getLogger(ScheduleResource.class);
-
     private static final String ENTITY_NAME = "schedule";
-
+    private final Logger log = LoggerFactory.getLogger(ScheduleResource.class);
     private final ScheduleService scheduleService;
 
     public ScheduleResource(ScheduleService scheduleService) {
@@ -108,6 +108,15 @@ public class ScheduleResource {
         log.debug("REST request to get Schedule : {}", id);
         Optional<ScheduleDTO> scheduleDTO = scheduleService.findOne(id);
         return ResponseUtil.wrapOrNotFound(scheduleDTO);
+    }
+
+    @GetMapping("/schedules/month/{month}")
+    @Timed
+    public ResponseEntity<List<ScheduleDTO>> getByMonth(@PathVariable @DateTimeFormat(pattern = "yyyy-MM") YearMonth yearWithMonth) {
+        // Get last day of the month
+        LocalDate endOfMonth = yearWithMonth.atEndOfMonth();
+        List<ScheduleDTO> schedules = scheduleService.findByDateBetween(yearWithMonth.atDay(1), endOfMonth);
+        return new ResponseEntity<>(schedules, HttpStatus.OK);
     }
 
     /**

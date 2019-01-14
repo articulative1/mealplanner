@@ -1,7 +1,8 @@
 package com.mealplanner.service.dto;
 
-import java.time.LocalDate;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Objects;
 
 /**
@@ -11,11 +12,14 @@ public class ScheduleDTO implements Serializable {
 
     private Long id;
 
+    @NotNull
     private LocalDate date;
 
     private Boolean completed;
 
     private Long mealId;
+
+    private String mealName;
 
     public Long getId() {
         return id;
@@ -49,6 +53,14 @@ public class ScheduleDTO implements Serializable {
         this.mealId = mealId;
     }
 
+    public String getMealName() {
+        return mealName;
+    }
+
+    public void setMealName(String mealName) {
+        this.mealName = mealName;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -77,6 +89,7 @@ public class ScheduleDTO implements Serializable {
             ", date='" + getDate() + "'" +
             ", completed='" + isCompleted() + "'" +
             ", meal=" + getMealId() +
+            ", meal='" + getMealName() + "'" +
             "}";
     }
 }

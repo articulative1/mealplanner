@@ -35,4 +35,8 @@ export class MealService {
     delete(id: number): Observable<HttpResponse<any>> {
         return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response' });
     }
+
+    random(): Observable<EntityResponseType> {
+        return this.http.get<IMeal>(`${this.resourceUrl}/random`, { observe: 'response' });
+    }
 }
