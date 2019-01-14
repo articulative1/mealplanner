@@ -1,15 +1,15 @@
-import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
 import { MealplannerSharedModule } from 'app/shared';
 import {
     MealComponent,
-    MealDeleteDialogComponent,
-    MealDeletePopupComponent,
     MealDetailComponent,
-    mealPopupRoute,
+    MealUpdateComponent,
+    MealDeletePopupComponent,
+    MealDeleteDialogComponent,
     mealRoute,
-    MealUpdateComponent
+    mealPopupRoute
 } from './';
 
 const ENTITY_STATES = [...mealRoute, ...mealPopupRoute];

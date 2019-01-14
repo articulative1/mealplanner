@@ -10,7 +10,7 @@ import { IMeal } from 'app/shared/model/meal.model';
 export class MealDetailComponent implements OnInit {
     meal: IMeal;
 
-    constructor(private activatedRoute: ActivatedRoute) {}
+    constructor(protected activatedRoute: ActivatedRoute) {}
 
     ngOnInit() {
         this.activatedRoute.data.subscribe(({ meal }) => {

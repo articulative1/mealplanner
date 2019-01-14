@@ -1,11 +1,14 @@
 package com.mealplanner.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Objects;
 
 /**
@@ -22,13 +25,15 @@ public class Meal implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
-    @Column(name = "name", nullable = false)
+    @Column(name = "name")
     private String name;
 
     @Column(name = "recipe")
     private String recipe;
 
+    @OneToMany(mappedBy = "meal")
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    private Set<RecipeIngredient> recipeIngredients = new HashSet<>();
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
@@ -42,26 +47,51 @@ public class Meal implements Serializable {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public Meal name(String name) {
         this.name = name;
         return this;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getRecipe() {
         return recipe;
     }
 
+    public Meal recipe(String recipe) {
+        this.recipe = recipe;
+        return this;
+    }
+
     public void setRecipe(String recipe) {
         this.recipe = recipe;
     }
 
-    public Meal recipe(String recipe) {
-        this.recipe = recipe;
+    public Set<RecipeIngredient> getRecipeIngredients() {
+        return recipeIngredients;
+    }
+
+    public Meal recipeIngredients(Set<RecipeIngredient> recipeIngredients) {
+        this.recipeIngredients = recipeIngredients;
         return this;
+    }
+
+    public Meal addRecipeIngredient(RecipeIngredient recipeIngredient) {
+        this.recipeIngredients.add(recipeIngredient);
+        recipeIngredient.setMeal(this);
+        return this;
+    }
+
+    public Meal removeRecipeIngredient(RecipeIngredient recipeIngredient) {
+        this.recipeIngredients.remove(recipeIngredient);
+        recipeIngredient.setMeal(null);
+        return this;
+    }
+
+    public void setRecipeIngredients(Set<RecipeIngredient> recipeIngredients) {
+        this.recipeIngredients = recipeIngredients;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 

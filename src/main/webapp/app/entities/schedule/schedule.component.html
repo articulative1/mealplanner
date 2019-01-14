@@ -1,10 +1,9 @@
 <div>
     <h2 id="page-heading">
         <span>Schedules</span>
-        <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-schedule"
-                [routerLink]="['/schedule/new']">
+        <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-schedule" [routerLink]="['/schedule/new']">
             <fa-icon [icon]="'plus'"></fa-icon>
-            <span>
+            <span >
             Create new Schedule
             </span>
         </button>
@@ -15,30 +14,21 @@
         <table class="table table-striped">
             <thead>
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="reset.bind(this)">
-                <th jhiSortBy="id"><span>ID</span>
-                    <fa-icon [icon]="'sort'"></fa-icon>
-                </th>
-                <th jhiSortBy="date"><span>Date</span>
-                    <fa-icon [icon]="'sort'"></fa-icon>
-                </th>
-                <th jhiSortBy="completed"><span>Completed</span>
-                    <fa-icon [icon]="'sort'"></fa-icon>
-                </th>
-                <th jhiSortBy="mealName"><span>Meal</span>
-                    <fa-icon [icon]="'sort'"></fa-icon>
-                </th>
-                <th></th>
+            <th jhiSortBy="id"><span>ID</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="date"><span>Date</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="completed"><span>Completed</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="mealId"><span>Meal</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th></th>
             </tr>
             </thead>
-            <tbody infinite-scroll (scrolled)="loadPage(page + 1)" [infiniteScrollDisabled]="page >= links['last']"
-                   [infiniteScrollDistance]="0">
+            <tbody infinite-scroll (scrolled)="loadPage(page + 1)" [infiniteScrollDisabled]="page >= links['last']" [infiniteScrollDistance]="0">
             <tr *ngFor="let schedule of schedules ;trackBy: trackId">
                 <td><a [routerLink]="['/schedule', schedule.id, 'view' ]">{{schedule.id}}</a></td>
-                <td>{{schedule.date | date:'mediumDate'}}</td>
+                <td>{{schedule.date | date:'medium'}}</td>
                 <td>{{schedule.completed}}</td>
                 <td>
                     <div *ngIf="schedule.mealId">
-                        <a [routerLink]="['../meal', schedule.mealId , 'view' ]">{{schedule.mealName}}</a>
+                        <a [routerLink]="['../meal', schedule.mealId , 'view' ]" >{{schedule.mealId}}</a>
                     </div>
                 </td>
                 <td class="text-right">

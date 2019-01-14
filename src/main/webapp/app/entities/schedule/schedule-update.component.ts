@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import * as moment from 'moment';
+import { DATE_TIME_FORMAT } from 'app/shared/constants/input.constants';
 import { JhiAlertService } from 'ng-jhipster';
 
 import { ISchedule } from 'app/shared/model/schedule.model';
@@ -14,31 +16,24 @@ import { MealService } from 'app/entities/meal';
     templateUrl: './schedule-update.component.html'
 })
 export class ScheduleUpdateComponent implements OnInit {
+    schedule: ISchedule;
     isSaving: boolean;
-    meals: IMeal[];
-    dateDp: any;
 
-    private _schedule: ISchedule;
+    meals: IMeal[];
+    date: string;
 
     constructor(
-        private jhiAlertService: JhiAlertService,
-        private scheduleService: ScheduleService,
-        private mealService: MealService,
-        private activatedRoute: ActivatedRoute
+        protected jhiAlertService: JhiAlertService,
+        protected scheduleService: ScheduleService,
+        protected mealService: MealService,
+        protected activatedRoute: ActivatedRoute
     ) {}
-
-    get schedule() {
-        return this._schedule;
-    }
-
-    set schedule(schedule: ISchedule) {
-        this._schedule = schedule;
-    }
 
     ngOnInit() {
         this.isSaving = false;
         this.activatedRoute.data.subscribe(({ schedule }) => {
             this.schedule = schedule;
+            this.date = this.schedule.date != null ? this.schedule.date.format(DATE_TIME_FORMAT) : null;
         });
         this.mealService.query().subscribe(
             (res: HttpResponse<IMeal[]>) => {
@@ -54,6 +49,7 @@ export class ScheduleUpdateComponent implements OnInit {
 
     save() {
         this.isSaving = true;
+        this.schedule.date = this.date != null ? moment(this.date, DATE_TIME_FORMAT) : null;
         if (this.schedule.id !== undefined) {
             this.subscribeToSaveResponse(this.scheduleService.update(this.schedule));
         } else {
@@ -61,24 +57,24 @@ export class ScheduleUpdateComponent implements OnInit {
         }
     }
 
-    trackMealById(index: number, item: IMeal) {
-        return item.id;
-    }
-
-    private subscribeToSaveResponse(result: Observable<HttpResponse<ISchedule>>) {
+    protected subscribeToSaveResponse(result: Observable<HttpResponse<ISchedule>>) {
         result.subscribe((res: HttpResponse<ISchedule>) => this.onSaveSuccess(), (res: HttpErrorResponse) => this.onSaveError());
     }
 
-    private onSaveSuccess() {
+    protected onSaveSuccess() {
         this.isSaving = false;
         this.previousState();
     }
 
-    private onSaveError() {
+    protected onSaveError() {
         this.isSaving = false;
     }
 
-    private onError(errorMessage: string) {
+    protected onError(errorMessage: string) {
         this.jhiAlertService.error(errorMessage, null, null);
+    }
+
+    trackMealById(index: number, item: IMeal) {
+        return item.id;
     }
 }

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { IMeal } from 'app/shared/model/meal.model';
@@ -11,18 +11,10 @@ import { MealService } from './meal.service';
     templateUrl: './meal-update.component.html'
 })
 export class MealUpdateComponent implements OnInit {
+    meal: IMeal;
     isSaving: boolean;
-    private _meal: IMeal;
 
-    constructor(private mealService: MealService, private activatedRoute: ActivatedRoute) {}
-
-    get meal() {
-        return this._meal;
-    }
-
-    set meal(meal: IMeal) {
-        this._meal = meal;
-    }
+    constructor(protected mealService: MealService, protected activatedRoute: ActivatedRoute) {}
 
     ngOnInit() {
         this.isSaving = false;
@@ -44,16 +36,16 @@ export class MealUpdateComponent implements OnInit {
         }
     }
 
-    private subscribeToSaveResponse(result: Observable<HttpResponse<IMeal>>) {
+    protected subscribeToSaveResponse(result: Observable<HttpResponse<IMeal>>) {
         result.subscribe((res: HttpResponse<IMeal>) => this.onSaveSuccess(), (res: HttpErrorResponse) => this.onSaveError());
     }
 
-    private onSaveSuccess() {
+    protected onSaveSuccess() {
         this.isSaving = false;
         this.previousState();
     }
 
-    private onSaveError() {
+    protected onSaveError() {
         this.isSaving = false;
     }
 }

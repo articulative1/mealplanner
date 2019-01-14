@@ -5,9 +5,9 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.time.Instant;
 import java.util.Objects;
 
 /**
@@ -24,15 +24,13 @@ public class Schedule implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
-    @Column(name = "jhi_date", nullable = false)
-    private LocalDate date;
+    @Column(name = "jhi_date")
+    private Instant date;
 
     @Column(name = "completed")
     private Boolean completed;
 
-    @ManyToOne(optional = false)
-    @NotNull
+    @ManyToOne
     @JsonIgnoreProperties("")
     private Meal meal;
 
@@ -45,17 +43,17 @@ public class Schedule implements Serializable {
         this.id = id;
     }
 
-    public LocalDate getDate() {
+    public Instant getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
-
-    public Schedule date(LocalDate date) {
+    public Schedule date(Instant date) {
         this.date = date;
         return this;
+    }
+
+    public void setDate(Instant date) {
+        this.date = date;
     }
 
     public Boolean isCompleted() {
@@ -75,13 +73,13 @@ public class Schedule implements Serializable {
         return meal;
     }
 
-    public void setMeal(Meal meal) {
-        this.meal = meal;
-    }
-
     public Schedule meal(Meal meal) {
         this.meal = meal;
         return this;
+    }
+
+    public void setMeal(Meal meal) {
+        this.meal = meal;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
