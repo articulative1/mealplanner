@@ -1,0 +1,68 @@
+<div>
+    <h2 id="page-heading">
+        <span>Recipe Ingredients</span>
+        <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-recipe-ingredient" [routerLink]="['/recipe-ingredient/new']">
+            <fa-icon [icon]="'plus'"></fa-icon>
+            <span >
+            Create new Recipe Ingredient
+            </span>
+        </button>
+    </h2>
+    <jhi-alert></jhi-alert>
+    <br/>
+    <div class="table-responsive" *ngIf="recipeIngredients">
+        <table class="table table-striped">
+            <thead>
+            <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="reset.bind(this)">
+            <th jhiSortBy="id"><span>ID</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="measurementType"><span>Measurement Type</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="measurementValue"><span>Measurement Value</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="mealId"><span>Meal</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="ingredientId"><span>Ingredient</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th></th>
+            </tr>
+            </thead>
+            <tbody infinite-scroll (scrolled)="loadPage(page + 1)" [infiniteScrollDisabled]="page >= links['last']" [infiniteScrollDistance]="0">
+            <tr *ngFor="let recipeIngredient of recipeIngredients ;trackBy: trackId">
+                <td><a [routerLink]="['/recipe-ingredient', recipeIngredient.id, 'view' ]">{{recipeIngredient.id}}</a></td>
+                <td>{{recipeIngredient.measurementType}}</td>
+                <td>{{recipeIngredient.measurementValue}}</td>
+                <td>
+                    <div *ngIf="recipeIngredient.mealId">
+                        <a [routerLink]="['../meal', recipeIngredient.mealId , 'view' ]" >{{recipeIngredient.mealId}}</a>
+                    </div>
+                </td>
+                <td>
+                    <div *ngIf="recipeIngredient.ingredientId">
+                        <a [routerLink]="['../ingredient', recipeIngredient.ingredientId , 'view' ]" >{{recipeIngredient.ingredientId}}</a>
+                    </div>
+                </td>
+                <td class="text-right">
+                    <div class="btn-group flex-btn-group-container">
+                        <button type="submit"
+                                [routerLink]="['/recipe-ingredient', recipeIngredient.id, 'view' ]"
+                                class="btn btn-info btn-sm">
+                            <fa-icon [icon]="'eye'"></fa-icon>
+                            <span class="d-none d-md-inline">View</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/recipe-ingredient', recipeIngredient.id, 'edit']"
+                                class="btn btn-primary btn-sm">
+                            <fa-icon [icon]="'pencil-alt'"></fa-icon>
+                            <span class="d-none d-md-inline">Edit</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/', { outlets: { popup: 'recipe-ingredient/'+ recipeIngredient.id + '/delete'} }]"
+                                replaceUrl="true"
+                                queryParamsHandling="merge"
+                                class="btn btn-danger btn-sm">
+                            <fa-icon [icon]="'times'"></fa-icon>
+                            <span class="d-none d-md-inline">Delete</span>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

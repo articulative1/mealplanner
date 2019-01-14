@@ -10,7 +10,7 @@ import { ISchedule } from 'app/shared/model/schedule.model';
 export class ScheduleDetailComponent implements OnInit {
     schedule: ISchedule;
 
-    constructor(private activatedRoute: ActivatedRoute) {}
+    constructor(protected activatedRoute: ActivatedRoute) {}
 
     ngOnInit() {
         this.activatedRoute.data.subscribe(({ schedule }) => {

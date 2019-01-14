@@ -1,12 +1,14 @@
 package com.mealplanner.web.rest;
 
 import com.mealplanner.MealplannerApp;
+
 import com.mealplanner.domain.Meal;
 import com.mealplanner.repository.MealRepository;
 import com.mealplanner.service.MealService;
 import com.mealplanner.service.dto.MealDTO;
 import com.mealplanner.service.mapper.MealMapper;
 import com.mealplanner.web.rest.errors.ExceptionTranslator;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,9 +22,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.Validator;
 
 import javax.persistence.EntityManager;
 import java.util.List;
+
 
 import static com.mealplanner.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -66,22 +70,12 @@ public class MealResourceIntTest {
     @Autowired
     private EntityManager em;
 
+    @Autowired
+    private Validator validator;
+
     private MockMvc restMealMockMvc;
 
     private Meal meal;
-
-    /**
-     * Create an entity for this test.
-     * <p>
-     * This is a static method, as tests for other entities might also need it,
-     * if they test an entity which requires the current entity.
-     */
-    public static Meal createEntity(EntityManager em) {
-        Meal meal = new Meal()
-            .name(DEFAULT_NAME)
-            .recipe(DEFAULT_RECIPE);
-        return meal;
-    }
 
     @Before
     public void setup() {
@@ -91,7 +85,21 @@ public class MealResourceIntTest {
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
             .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter).build();
+            .setMessageConverters(jacksonMessageConverter)
+            .setValidator(validator).build();
+    }
+
+    /**
+     * Create an entity for this test.
+     *
+     * This is a static method, as tests for other entities might also need it,
+     * if they test an entity which requires the current entity.
+     */
+    public static Meal createEntity(EntityManager em) {
+        Meal meal = new Meal()
+            .name(DEFAULT_NAME)
+            .recipe(DEFAULT_RECIPE);
+        return meal;
     }
 
     @Before
@@ -141,25 +149,6 @@ public class MealResourceIntTest {
 
     @Test
     @Transactional
-    public void checkNameIsRequired() throws Exception {
-        int databaseSizeBeforeTest = mealRepository.findAll().size();
-        // set the field null
-        meal.setName(null);
-
-        // Create the Meal, which fails.
-        MealDTO mealDTO = mealMapper.toDto(meal);
-
-        restMealMockMvc.perform(post("/api/meals")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(mealDTO)))
-            .andExpect(status().isBadRequest());
-
-        List<Meal> mealList = mealRepository.findAll();
-        assertThat(mealList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
     public void getAllMeals() throws Exception {
         // Initialize the database
         mealRepository.saveAndFlush(meal);
@@ -169,10 +158,10 @@ public class MealResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(meal.getId().intValue())))
-            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
-            .andExpect(jsonPath("$.[*].recipe").value(hasItem(DEFAULT_RECIPE)));
+            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
+            .andExpect(jsonPath("$.[*].recipe").value(hasItem(DEFAULT_RECIPE.toString())));
     }
-
+    
     @Test
     @Transactional
     public void getMeal() throws Exception {
@@ -184,8 +173,8 @@ public class MealResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(meal.getId().intValue()))
-            .andExpect(jsonPath("$.name").value(DEFAULT_NAME))
-            .andExpect(jsonPath("$.recipe").value(DEFAULT_RECIPE));
+            .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()))
+            .andExpect(jsonPath("$.recipe").value(DEFAULT_RECIPE.toString()));
     }
 
     @Test

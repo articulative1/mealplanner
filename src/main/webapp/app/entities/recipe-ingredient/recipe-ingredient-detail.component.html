@@ -1,0 +1,43 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="recipeIngredient">
+            <h2><span>Recipe Ingredient</span> {{recipeIngredient.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span>Measurement Type</span></dt>
+                <dd>
+                    <span>{{recipeIngredient.measurementType}}</span>
+                </dd>
+                <dt><span>Measurement Value</span></dt>
+                <dd>
+                    <span>{{recipeIngredient.measurementValue}}</span>
+                </dd>
+                <dt><span>Meal</span></dt>
+                <dd>
+                    <div *ngIf="recipeIngredient.mealId">
+                        <a [routerLink]="['/meal', recipeIngredient.mealId, 'view']">{{recipeIngredient.mealId}}</a>
+                    </div>
+                </dd>
+                <dt><span>Ingredient</span></dt>
+                <dd>
+                    <div *ngIf="recipeIngredient.ingredientId">
+                        <a [routerLink]="['/ingredient', recipeIngredient.ingredientId, 'view']">{{recipeIngredient.ingredientId}}</a>
+                    </div>
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span> Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/recipe-ingredient', recipeIngredient.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span> Edit</span>
+            </button>
+        </div>
+    </div>
+</div>

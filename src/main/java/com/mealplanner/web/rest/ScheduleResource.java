@@ -2,26 +2,23 @@ package com.mealplanner.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.mealplanner.service.ScheduleService;
-import com.mealplanner.service.dto.ScheduleDTO;
 import com.mealplanner.web.rest.errors.BadRequestAlertException;
 import com.mealplanner.web.rest.util.HeaderUtil;
 import com.mealplanner.web.rest.util.PaginationUtil;
+import com.mealplanner.service.dto.ScheduleDTO;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.time.LocalDate;
-import java.time.YearMonth;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -32,8 +29,10 @@ import java.util.Optional;
 @RequestMapping("/api")
 public class ScheduleResource {
 
-    private static final String ENTITY_NAME = "schedule";
     private final Logger log = LoggerFactory.getLogger(ScheduleResource.class);
+
+    private static final String ENTITY_NAME = "schedule";
+
     private final ScheduleService scheduleService;
 
     public ScheduleResource(ScheduleService scheduleService) {
@@ -49,7 +48,7 @@ public class ScheduleResource {
      */
     @PostMapping("/schedules")
     @Timed
-    public ResponseEntity<ScheduleDTO> createSchedule(@Valid @RequestBody ScheduleDTO scheduleDTO) throws URISyntaxException {
+    public ResponseEntity<ScheduleDTO> createSchedule(@RequestBody ScheduleDTO scheduleDTO) throws URISyntaxException {
         log.debug("REST request to save Schedule : {}", scheduleDTO);
         if (scheduleDTO.getId() != null) {
             throw new BadRequestAlertException("A new schedule cannot already have an ID", ENTITY_NAME, "idexists");
@@ -67,10 +66,11 @@ public class ScheduleResource {
      * @return the ResponseEntity with status 200 (OK) and with body the updated scheduleDTO,
      * or with status 400 (Bad Request) if the scheduleDTO is not valid,
      * or with status 500 (Internal Server Error) if the scheduleDTO couldn't be updated
+     * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/schedules")
     @Timed
-    public ResponseEntity<ScheduleDTO> updateSchedule(@Valid @RequestBody ScheduleDTO scheduleDTO) {
+    public ResponseEntity<ScheduleDTO> updateSchedule(@RequestBody ScheduleDTO scheduleDTO) throws URISyntaxException {
         log.debug("REST request to update Schedule : {}", scheduleDTO);
         if (scheduleDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
@@ -93,7 +93,7 @@ public class ScheduleResource {
         log.debug("REST request to get a page of Schedules");
         Page<ScheduleDTO> page = scheduleService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/schedules");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
     /**
@@ -108,15 +108,6 @@ public class ScheduleResource {
         log.debug("REST request to get Schedule : {}", id);
         Optional<ScheduleDTO> scheduleDTO = scheduleService.findOne(id);
         return ResponseUtil.wrapOrNotFound(scheduleDTO);
-    }
-
-    @GetMapping("/schedules/month/{month}")
-    @Timed
-    public ResponseEntity<List<ScheduleDTO>> getByMonth(@PathVariable @DateTimeFormat(pattern = "yyyy-MM") YearMonth yearWithMonth) {
-        // Get last day of the month
-        LocalDate endOfMonth = yearWithMonth.atEndOfMonth();
-        List<ScheduleDTO> schedules = scheduleService.findByDateBetween(yearWithMonth.atDay(1), endOfMonth);
-        return new ResponseEntity<>(schedules, HttpStatus.OK);
     }
 
     /**

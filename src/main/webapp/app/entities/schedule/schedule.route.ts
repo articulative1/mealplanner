@@ -1,36 +1,30 @@
 import { Injectable } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
-import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot, Routes } from '@angular/router';
+import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@angular/router';
 import { UserRouteAccessService } from 'app/core';
-import { of } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { ISchedule, Schedule } from 'app/shared/model/schedule.model';
+import { Observable, of } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
+import { Schedule } from 'app/shared/model/schedule.model';
 import { ScheduleService } from './schedule.service';
 import { ScheduleComponent } from './schedule.component';
 import { ScheduleDetailComponent } from './schedule-detail.component';
 import { ScheduleUpdateComponent } from './schedule-update.component';
 import { ScheduleDeletePopupComponent } from './schedule-delete-dialog.component';
-import * as moment from 'moment';
+import { ISchedule } from 'app/shared/model/schedule.model';
 
 @Injectable({ providedIn: 'root' })
 export class ScheduleResolve implements Resolve<ISchedule> {
     constructor(private service: ScheduleService) {}
 
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Schedule> {
         const id = route.params['id'] ? route.params['id'] : null;
         if (id) {
-            return this.service.find(id).pipe(map((schedule: HttpResponse<Schedule>) => schedule.body));
-        } else {
-            const schedule = new Schedule();
-            // populate date with current date if date not passed in
-            const date = route.queryParams['date'];
-            if (date) {
-                schedule.date = moment(date);
-            } else {
-                schedule.date = moment();
-            }
-            return of(schedule);
+            return this.service.find(id).pipe(
+                filter((response: HttpResponse<Schedule>) => response.ok),
+                map((schedule: HttpResponse<Schedule>) => schedule.body)
+            );
         }
+        return of(new Schedule());
     }
 }
 

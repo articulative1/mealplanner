@@ -14,9 +14,9 @@ type EntityArrayResponseType = HttpResponse<ISchedule[]>;
 
 @Injectable({ providedIn: 'root' })
 export class ScheduleService {
-    private resourceUrl = SERVER_API_URL + 'api/schedules';
+    public resourceUrl = SERVER_API_URL + 'api/schedules';
 
-    constructor(private http: HttpClient) {}
+    constructor(protected http: HttpClient) {}
 
     create(schedule: ISchedule): Observable<EntityResponseType> {
         const copy = this.convertDateFromClient(schedule);
@@ -49,28 +49,26 @@ export class ScheduleService {
         return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response' });
     }
 
-    findByMonth(month: string): Observable<EntityArrayResponseType> {
-        return this.http
-            .get<ISchedule[]>(this.resourceUrl, { observe: 'response' })
-            .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
-    }
-
-    private convertDateFromClient(schedule: ISchedule): ISchedule {
+    protected convertDateFromClient(schedule: ISchedule): ISchedule {
         const copy: ISchedule = Object.assign({}, schedule, {
             date: schedule.date != null && schedule.date.isValid() ? schedule.date.format(DATE_FORMAT) : null
         });
         return copy;
     }
 
-    private convertDateFromServer(res: EntityResponseType): EntityResponseType {
-        res.body.date = res.body.date != null ? moment(res.body.date) : null;
+    protected convertDateFromServer(res: EntityResponseType): EntityResponseType {
+        if (res.body) {
+            res.body.date = res.body.date != null ? moment(res.body.date) : null;
+        }
         return res;
     }
 
-    private convertDateArrayFromServer(res: EntityArrayResponseType): EntityArrayResponseType {
-        res.body.forEach((schedule: ISchedule) => {
-            schedule.date = schedule.date != null ? moment(schedule.date) : null;
-        });
+    protected convertDateArrayFromServer(res: EntityArrayResponseType): EntityArrayResponseType {
+        if (res.body) {
+            res.body.forEach((schedule: ISchedule) => {
+                schedule.date = schedule.date != null ? moment(schedule.date) : null;
+            });
+        }
         return res;
     }
 }
