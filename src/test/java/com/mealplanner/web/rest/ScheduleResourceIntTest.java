@@ -1,13 +1,14 @@
 package com.mealplanner.web.rest;
 
 import com.mealplanner.MealplannerApp;
-import com.mealplanner.domain.Meal;
+
 import com.mealplanner.domain.Schedule;
 import com.mealplanner.repository.ScheduleRepository;
 import com.mealplanner.service.ScheduleService;
 import com.mealplanner.service.dto.ScheduleDTO;
 import com.mealplanner.service.mapper.ScheduleMapper;
 import com.mealplanner.web.rest.errors.ExceptionTranslator;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,11 +22,13 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.Validator;
 
 import javax.persistence.EntityManager;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
+
 
 import static com.mealplanner.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -69,27 +72,12 @@ public class ScheduleResourceIntTest {
     @Autowired
     private EntityManager em;
 
+    @Autowired
+    private Validator validator;
+
     private MockMvc restScheduleMockMvc;
 
     private Schedule schedule;
-
-    /**
-     * Create an entity for this test.
-     * <p>
-     * This is a static method, as tests for other entities might also need it,
-     * if they test an entity which requires the current entity.
-     */
-    public static Schedule createEntity(EntityManager em) {
-        Schedule schedule = new Schedule()
-            .date(DEFAULT_DATE)
-            .completed(DEFAULT_COMPLETED);
-        // Add required entity
-        Meal meal = MealResourceIntTest.createEntity(em);
-        em.persist(meal);
-        em.flush();
-        schedule.setMeal(meal);
-        return schedule;
-    }
 
     @Before
     public void setup() {
@@ -99,7 +87,21 @@ public class ScheduleResourceIntTest {
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
             .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter).build();
+            .setMessageConverters(jacksonMessageConverter)
+            .setValidator(validator).build();
+    }
+
+    /**
+     * Create an entity for this test.
+     *
+     * This is a static method, as tests for other entities might also need it,
+     * if they test an entity which requires the current entity.
+     */
+    public static Schedule createEntity(EntityManager em) {
+        Schedule schedule = new Schedule()
+            .date(DEFAULT_DATE)
+            .completed(DEFAULT_COMPLETED);
+        return schedule;
     }
 
     @Before
@@ -149,25 +151,6 @@ public class ScheduleResourceIntTest {
 
     @Test
     @Transactional
-    public void checkDateIsRequired() throws Exception {
-        int databaseSizeBeforeTest = scheduleRepository.findAll().size();
-        // set the field null
-        schedule.setDate(null);
-
-        // Create the Schedule, which fails.
-        ScheduleDTO scheduleDTO = scheduleMapper.toDto(schedule);
-
-        restScheduleMockMvc.perform(post("/api/schedules")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(scheduleDTO)))
-            .andExpect(status().isBadRequest());
-
-        List<Schedule> scheduleList = scheduleRepository.findAll();
-        assertThat(scheduleList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
     public void getAllSchedules() throws Exception {
         // Initialize the database
         scheduleRepository.saveAndFlush(schedule);
@@ -180,7 +163,7 @@ public class ScheduleResourceIntTest {
             .andExpect(jsonPath("$.[*].date").value(hasItem(DEFAULT_DATE.toString())))
             .andExpect(jsonPath("$.[*].completed").value(hasItem(DEFAULT_COMPLETED.booleanValue())));
     }
-
+    
     @Test
     @Transactional
     public void getSchedule() throws Exception {

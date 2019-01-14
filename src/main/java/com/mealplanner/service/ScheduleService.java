@@ -6,15 +6,13 @@ import com.mealplanner.service.dto.ScheduleDTO;
 import com.mealplanner.service.mapper.ScheduleMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Service Implementation for managing Schedule.
@@ -42,6 +40,7 @@ public class ScheduleService {
      */
     public ScheduleDTO save(ScheduleDTO scheduleDTO) {
         log.debug("Request to save Schedule : {}", scheduleDTO);
+
         Schedule schedule = scheduleMapper.toEntity(scheduleDTO);
         schedule = scheduleRepository.save(schedule);
         return scheduleMapper.toDto(schedule);
@@ -58,12 +57,6 @@ public class ScheduleService {
         log.debug("Request to get all Schedules");
         return scheduleRepository.findAll(pageable)
             .map(scheduleMapper::toDto);
-    }
-
-    @Transactional(readOnly = true)
-    public List<ScheduleDTO> findByDateBetween(LocalDate firstDate, LocalDate secondDate) {
-        List<Schedule> schedules = scheduleRepository.findAllByDateBetween(firstDate, secondDate);
-        return schedules.stream().map(scheduleMapper::toDto).collect(Collectors.toList());
     }
 
 

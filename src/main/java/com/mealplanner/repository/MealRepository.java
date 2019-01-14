@@ -1,7 +1,7 @@
 package com.mealplanner.repository;
 
 import com.mealplanner.domain.Meal;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
 
 
