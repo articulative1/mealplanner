@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
 import java.util.Optional;
 
@@ -105,6 +108,15 @@ public class ScheduleResource {
         log.debug("REST request to get Schedule : {}", id);
         Optional<ScheduleDTO> scheduleDTO = scheduleService.findOne(id);
         return ResponseUtil.wrapOrNotFound(scheduleDTO);
+    }
+
+    @GetMapping("/schedules/month/{month}")
+    @Timed
+    public ResponseEntity<List<ScheduleDTO>> getByMonth(@PathVariable @DateTimeFormat(pattern = "yyyy-MM") YearMonth yearWithMonth) {
+        // Get last day of the month
+        LocalDate endOfMonth = yearWithMonth.atEndOfMonth();
+        List<ScheduleDTO> schedules = scheduleService.findByDateBetween(yearWithMonth.atDay(1), endOfMonth);
+        return new ResponseEntity<>(schedules, HttpStatus.OK);
     }
 
     /**

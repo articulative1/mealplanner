@@ -10,6 +10,7 @@ import {
     faBars,
     faBell,
     faBook,
+    faCalendar,
     faCalendarAlt,
     faClock,
     faCloud,
@@ -80,5 +81,6 @@ library.add(faSearch);
 library.add(faTrashAlt);
 library.add(faAsterisk);
 library.add(faRandom);
+library.add(faCalendar);
 
 // jhipster-needle-add-element-to-vendor - JHipster will add new menu items here

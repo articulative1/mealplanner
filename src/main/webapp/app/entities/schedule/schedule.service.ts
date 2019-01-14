@@ -49,6 +49,12 @@ export class ScheduleService {
         return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response' });
     }
 
+    findByMonth(month: string): Observable<EntityArrayResponseType> {
+        return this.http
+            .get<ISchedule[]>(this.resourceUrl, { observe: 'response' })
+            .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
+    }
+
     private convertDateFromClient(schedule: ISchedule): ISchedule {
         const copy: ISchedule = Object.assign({}, schedule, {
             date: schedule.date != null && schedule.date.isValid() ? schedule.date.format(DATE_FORMAT) : null

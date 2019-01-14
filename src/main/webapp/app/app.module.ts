@@ -21,6 +21,7 @@ import { MealplannerEntityModule } from './entities/entity.module';
 import * as moment from 'moment';
 // jhipster-needle-angular-add-module-import JHipster will add new module here
 import { ErrorComponent, FooterComponent, JhiMainComponent, NavbarComponent, PageRibbonComponent } from './layouts';
+import { ScheduleModule } from 'app/schedule/schedule.module';
 
 @NgModule({
     imports: [
@@ -32,7 +33,8 @@ import { ErrorComponent, FooterComponent, JhiMainComponent, NavbarComponent, Pag
         MealplannerHomeModule,
         MealplannerAccountModule,
         MealplannerEntityModule,
-        MealRandomModule
+        MealRandomModule,
+        ScheduleModule
         // jhipster-needle-angular-add-module JHipster will add new module here
     ],
     declarations: [JhiMainComponent, NavbarComponent, ErrorComponent, PageRibbonComponent, FooterComponent],

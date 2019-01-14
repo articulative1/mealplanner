@@ -5,6 +5,8 @@ import com.mealplanner.service.dto.ScheduleDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import java.util.List;
+
 /**
  * Mapper for the entity Schedule and its DTO ScheduleDTO.
  */
@@ -15,8 +17,14 @@ public interface ScheduleMapper extends EntityMapper<ScheduleDTO, Schedule> {
     @Mapping(source = "meal.name", target = "mealName")
     ScheduleDTO toDto(Schedule schedule);
 
+    List<ScheduleDTO> mapSchedulesToScheduleDTOs(List<Schedule> users);
+
+
     @Mapping(source = "mealId", target = "meal")
     Schedule toEntity(ScheduleDTO scheduleDTO);
+
+    List<Schedule> mapScheduleDTOsToSchedules(List<ScheduleDTO> users);
+
 
     default Schedule fromId(Long id) {
         if (id == null) {

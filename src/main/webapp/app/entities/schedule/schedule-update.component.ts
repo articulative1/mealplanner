@@ -18,14 +18,14 @@ export class ScheduleUpdateComponent implements OnInit {
     meals: IMeal[];
     dateDp: any;
 
+    private _schedule: ISchedule;
+
     constructor(
         private jhiAlertService: JhiAlertService,
         private scheduleService: ScheduleService,
         private mealService: MealService,
         private activatedRoute: ActivatedRoute
     ) {}
-
-    private _schedule: ISchedule;
 
     get schedule() {
         return this._schedule;

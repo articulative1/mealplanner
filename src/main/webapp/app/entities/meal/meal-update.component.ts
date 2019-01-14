@@ -12,10 +12,9 @@ import { MealService } from './meal.service';
 })
 export class MealUpdateComponent implements OnInit {
     isSaving: boolean;
+    private _meal: IMeal;
 
     constructor(private mealService: MealService, private activatedRoute: ActivatedRoute) {}
-
-    private _meal: IMeal;
 
     get meal() {
         return this._meal;

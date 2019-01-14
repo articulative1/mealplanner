@@ -10,6 +10,7 @@ import { ScheduleComponent } from './schedule.component';
 import { ScheduleDetailComponent } from './schedule-detail.component';
 import { ScheduleUpdateComponent } from './schedule-update.component';
 import { ScheduleDeletePopupComponent } from './schedule-delete-dialog.component';
+import * as moment from 'moment';
 
 @Injectable({ providedIn: 'root' })
 export class ScheduleResolve implements Resolve<ISchedule> {
@@ -19,8 +20,17 @@ export class ScheduleResolve implements Resolve<ISchedule> {
         const id = route.params['id'] ? route.params['id'] : null;
         if (id) {
             return this.service.find(id).pipe(map((schedule: HttpResponse<Schedule>) => schedule.body));
+        } else {
+            const schedule = new Schedule();
+            // populate date with current date if date not passed in
+            const date = route.queryParams['date'];
+            if (date) {
+                schedule.date = moment(date);
+            } else {
+                schedule.date = moment();
+            }
+            return of(schedule);
         }
-        return of(new Schedule());
     }
 }
 

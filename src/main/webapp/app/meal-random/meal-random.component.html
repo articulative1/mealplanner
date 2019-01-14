@@ -2,7 +2,7 @@
     <div class="col-8">
         <div *ngIf="meal">
             <h2><span>{{meal.name}}</span></h2>
-            <span>{{meal.recipe}}</span>
+            <div [innerHTML]="meal.recipe"></div>
             <hr>
             <jhi-alert-error></jhi-alert-error>
 
