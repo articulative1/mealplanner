@@ -1,12 +1,9 @@
 entity Meal {
 	name String
-    recipeIngredient RecipeIngredient
     recipe String
-    
 }
 
 entity RecipeIngredient {
-	ingredient Ingredient,
     measurementType MeasurementType
     measurementValue Double
 }
@@ -16,9 +13,8 @@ entity Ingredient {
 }
 
 entity Schedule {
-	date Instant,
+	date LocalDate,
 	completed Boolean,
-	meal Meal,
 }
 
 
@@ -44,8 +40,3 @@ paginate Meal, Schedule, RecipeIngredient, Ingredient with infinite-scroll
 // Use Data Transfert Objects (DTO)
 dto * with mapstruct
 
-// Set service options to all except few
-service all with serviceImpl
-
-// Set an angular suffix
-// angularSuffix * with mySuffix
